@@ -38,9 +38,7 @@
         <div id="formErrors" style="display: none;" class="error"></div>
         <div id="formSuccess" style="display: none;" class="success"></div>
 
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAABvQQQ8dZiQYK5sR"></div>
-
-        <button type="submit">Send Message</button>
+        <button type="submit" id="submitBtn">Send Message</button>
     </form>
 
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -86,36 +84,51 @@
 
                     // Disable button and show loading state
                     submitBtn.disabled = true;
-                    submitBtn.textContent = 'Sending...';
+                    submitBtn.textContent = 'Verifying...';
 
-                    // Use fetch to send data to AWS API
-                    fetch('https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
+                    // Execute invisible Turnstile challenge
+                    turnstile.execute('#submitBtn', {
+                        sitekey: '0x4AAAAAABvQQQ8dZiQYK5sR',
+                        callback: function(token) {
+                            console.log('Turnstile token received:', token.substring(0, 20) + '...');
+                            
+                            // Add token to form data
+                            formObject['cf-turnstile-response'] = token;
+                            
+                            // Submit form with token
+                            submitBtn.textContent = 'Sending...';
+                            
+                            fetch('https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(formObject),
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('API response:', data);
+                                if (data.success) {
+                                    showFormSuccess(data.message || "Message was sent!");
+                                } else {
+                                    showFormErrors(data.errors || [data.message || "An error occurred. Please try again."]);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Network error:', error);
+                                showFormErrors(["A network error occurred. Please check your connection."]);
+                            })
+                            .finally(() => {
+                                // Re-enable button and reset text
+                                submitBtn.disabled = false;
+                                submitBtn.textContent = 'Send Message';
+                            });
                         },
-                        body: JSON.stringify(formObject),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('API response:', data);
-                        if (data.success) {
-                            showFormSuccess(data.message || "Message was sent!");
-                        } else {
-                            showFormErrors(data.errors || [data.message || "An error occurred. Please try again."]);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Network error:', error);
-                        showFormErrors(["A network error occurred. Please check your connection."]);
-                    })
-                    .finally(() => {
-                        // Re-enable button and reset text
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Send Message';
-                        
-                        if (typeof turnstile !== 'undefined') {
-                            turnstile.reset();
+                        'error-callback': function(error) {
+                            console.error('Turnstile error:', error);
+                            showFormErrors(['Security verification failed. Please try again.']);
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'Send Message';
                         }
                     });
                 });

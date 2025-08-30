@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
-// Form Validation for Contact Form
+// Form Validation for Contact Form with Invisible Turnstile
 const contactForm = document.getElementById('contactForm');
 
 if (contactForm) {
@@ -125,40 +125,59 @@ if (contactForm) {
 
         // Disable button and show loading state
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="loading"></span> Skickar...';
+        submitBtn.textContent = 'Verifierar...';
 
-        // Use fetch to send data to your AWS API
-        fetch('https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formObject),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // On success, call your helper function
-                showFormSuccess(data.message || "Meddelandet har skickats!");
-            } else {
-                // On failure, call your helper function
-                // The API returns an errors array, so use that or fallback to a single error
-                showFormErrors(data.errors || [data.message || "Ett fel inträffade. Vänligen försök igen."]);
-            }
-        })
-        .catch(() => {
-            // On network error, call your helper function
-            showFormErrors(["Ett nätverksfel inträffade. Vänligen kontrollera din anslutning."]);
-        })
-        .finally(() => {
-            // Re-enable button and reset text
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Skicka Meddelande';
-            
-            if (typeof turnstile !== 'undefined') {
-                turnstile.reset();
-            }
-        });
+        // Execute invisible Turnstile challenge
+        if (typeof turnstile !== 'undefined') {
+            turnstile.execute(submitBtn, {
+                sitekey: '0x4AAAAAABvQQQ8dZiQYK5sR',
+                callback: function(token) {
+                    // Add token to form data
+                    formObject['cf-turnstile-response'] = token;
+                    
+                    // Submit form with token
+                    submitBtn.textContent = 'Skickar...';
+                    submitFormData(formObject, submitBtn);
+                },
+                'error-callback': function(error) {
+                    console.error('Turnstile error:', error);
+                    showFormErrors(['Säkerhetsverifiering misslyckades. Vänligen försök igen.']);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Skicka Meddelande';
+                }
+            });
+        } else {
+            // Fallback if Turnstile not loaded
+            formObject['cf-turnstile-response'] = 'dev-bypass';
+            submitFormData(formObject, submitBtn);
+        }
+    });
+}
+
+// Helper function to submit form data
+function submitFormData(formObject, submitBtn) {
+    fetch('https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formObject),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showFormSuccess(data.message || "Meddelandet har skickats!");
+        } else {
+            showFormErrors(data.errors || [data.message || "Ett fel inträffade. Vänligen försök igen."]);
+        }
+    })
+    .catch(() => {
+        showFormErrors(["Ett nätverksfel inträffade. Vänligen kontrollera din anslutning."]);
+    })
+    .finally(() => {
+        // Re-enable button and reset text
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Skicka Meddelande';
     });
 }
 

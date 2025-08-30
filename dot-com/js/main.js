@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
-    // Form Validation for Contact Form
+    // Form Validation for Contact Form with Invisible Turnstile
     const contactForm = document.getElementById('contactForm');
 
     if (contactForm) {
@@ -140,51 +140,65 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(contactForm);
             const formObject = Object.fromEntries(formData.entries());
             
-            // Add development bypass if Turnstile token is missing
-            if (!formObject['cf-turnstile-response']) {
-                formObject['cf-turnstile-response'] = 'dev-bypass';
-            }
-            
             // Hide previous messages
             document.getElementById('formSuccess').style.display = 'none';
             document.getElementById('formErrors').style.display = 'none';
 
             // Disable button and show loading state
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="loading"></span> Sending...';
+            submitBtn.textContent = 'Verifying...';
 
-            // Use fetch to send data to your AWS API
-            fetch('https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formObject),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // On success, call your helper function
-                    showFormSuccess(data.message || "Message was sent!");
-                } else {
-                    // On failure, call your helper function
-                    // The API returns an errors array, so use that or fallback to a single error
-                    showFormErrors(data.errors || [data.message || "An error occurred. Please try again."]);
-                }
-            })
-            .catch(() => {
-                // On network error, call your helper function
-                showFormErrors(["A network error occurred. Please check your connection."]);
-            })
-            .finally(() => {
-                // Re-enable button and reset text
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Send Message';
-                
-                if (typeof turnstile !== 'undefined') {
-                    turnstile.reset();
-                }
-            });
+            // Execute invisible Turnstile challenge
+            if (typeof turnstile !== 'undefined') {
+                turnstile.execute(submitBtn, {
+                    sitekey: '0x4AAAAAABvQQQ8dZiQYK5sR',
+                    callback: function(token) {
+                        // Add token to form data
+                        formObject['cf-turnstile-response'] = token;
+                        
+                        // Submit form with token
+                        submitBtn.textContent = 'Sending...';
+                        submitFormData(formObject, submitBtn);
+                    },
+                    'error-callback': function(error) {
+                        console.error('Turnstile error:', error);
+                        showFormErrors(['Security verification failed. Please try again.']);
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Send Message';
+                    }
+                });
+            } else {
+                // Fallback if Turnstile not loaded
+                formObject['cf-turnstile-response'] = 'dev-bypass';
+                submitFormData(formObject, submitBtn);
+            }
+        });
+    }
+
+    // Helper function to submit form data
+    function submitFormData(formObject, submitBtn) {
+        fetch('https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formObject),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showFormSuccess(data.message || "Message was sent!");
+            } else {
+                showFormErrors(data.errors || [data.message || "An error occurred. Please try again."]);
+            }
+        })
+        .catch(() => {
+            showFormErrors(["A network error occurred. Please check your connection."]);
+        })
+        .finally(() => {
+            // Re-enable button and reset text
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send Message';
         });
     }
 });
