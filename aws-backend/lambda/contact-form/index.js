@@ -58,7 +58,7 @@ exports.handler = async (event) => {
         const origin = event.headers.origin || event.headers.Origin;
         const isSwedish = origin && origin.includes('verkflode.se');
         
-        // Send email via Mailgun (for development, return success even if email fails)
+        // Send email via Mailgun
         const emailSent = await sendEmail({
             name,
             email,
@@ -67,16 +67,25 @@ exports.handler = async (event) => {
             isSwedish
         });
 
-        // For development/testing, always return success if validation passed
-        // In production, you'd want to check emailSent
-        return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({
-                success: true,
-                message: isSwedish ? 'Meddelandet har skickats!' : 'Message sent successfully!'
-            })
-        };
+        if (emailSent) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                    success: true,
+                    message: isSwedish ? 'Meddelandet har skickats!' : 'Message sent successfully!'
+                })
+            };
+        } else {
+            return {
+                statusCode: 500,
+                headers,
+                body: JSON.stringify({
+                    success: false,
+                    errors: [isSwedish ? 'Ett fel inträffade. Vänligen försök igen.' : 'Failed to send message. Please try again.']
+                })
+            };
+        }
 
     } catch (error) {
         console.error('Error:', error);
@@ -183,7 +192,7 @@ Sent from verkflode.com contact form
 
     return new Promise((resolve) => {
         const options = {
-            hostname: 'api.mailgun.net',
+            hostname: 'api.eu.mailgun.net',
             port: 443,
             path: `/v3/${MAILGUN_DOMAIN}/messages`,
             method: 'POST',
@@ -200,12 +209,14 @@ Sent from verkflode.com contact form
                 data += chunk;
             });
             res.on('end', () => {
+                console.log(`Mailgun response status: ${res.statusCode}`);
+                console.log(`Mailgun response body: ${data}`);
                 resolve(res.statusCode === 200);
             });
         });
 
         req.on('error', (error) => {
-            console.error('Mailgun error:', error);
+            console.error('Mailgun request error:', error);
             resolve(false);
         });
 
