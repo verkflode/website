@@ -131,12 +131,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Form Validation for Contact Form
     const contactForm = document.getElementById('contactForm');
-    console.log('Contact form found:', contactForm);
 
     if (contactForm) {
-        console.log('Adding submit event listener to form');
         contactForm.addEventListener('submit', function(e) {
-            console.log('Form submit event triggered');
             e.preventDefault(); // Prevent default browser submission
 
             const submitBtn = contactForm.querySelector('button[type="submit"]');
@@ -147,8 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!formObject['cf-turnstile-response']) {
                 formObject['cf-turnstile-response'] = 'dev-bypass';
             }
-            
-            console.log('Form data:', formObject);
             
             // Hide previous messages
             document.getElementById('formSuccess').style.display = 'none';
@@ -191,13 +186,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
-    } else {
-        console.log('Contact form not found!');
     }
-    
-    // Test if form exists after DOM load
-    setTimeout(() => {
-        const testForm = document.getElementById('contactForm');
-        console.log('Form check after timeout:', testForm);
-    }, 1000);
 });
