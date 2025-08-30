@@ -127,30 +127,13 @@ if (contactForm) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Verifierar...';
 
-        // Execute invisible Turnstile challenge
-        if (typeof turnstile !== 'undefined') {
-            turnstile.execute(submitBtn, {
-                sitekey: '0x4AAAAAABvQQQ8dZiQYK5sR',
-                callback: function(token) {
-                    // Add token to form data
-                    formObject['cf-turnstile-response'] = token;
-                    
-                    // Submit form with token
-                    submitBtn.textContent = 'Skickar...';
-                    submitFormData(formObject, submitBtn);
-                },
-                'error-callback': function(error) {
-                    console.error('Turnstile error:', error);
-                    showFormErrors(['Säkerhetsverifiering misslyckades. Vänligen försök igen.']);
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Skicka Meddelande';
-                }
-            });
-        } else {
-            // Fallback if Turnstile not loaded
+        // Submit with Turnstile token (if available) or dev-bypass
+        if (!formObject['cf-turnstile-response']) {
             formObject['cf-turnstile-response'] = 'dev-bypass';
-            submitFormData(formObject, submitBtn);
         }
+        
+        submitBtn.textContent = 'Skickar...';
+        submitFormData(formObject, submitBtn);
     });
 }
 
