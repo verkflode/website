@@ -32,6 +32,18 @@ if [ -z "$MAILGUN_API_KEY" ] || [ -z "$MAILGUN_DOMAIN" ] || [ -z "$TURNSTILE_SEC
     exit 1
 fi
 
+# Check if stack exists and delete if in failed state
+echo "🔍 Checking existing stack status..."
+STACK_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --region $REGION --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo "DOES_NOT_EXIST")
+
+if [ "$STACK_STATUS" = "ROLLBACK_COMPLETE" ] || [ "$STACK_STATUS" = "CREATE_FAILED" ] || [ "$STACK_STATUS" = "UPDATE_ROLLBACK_COMPLETE" ]; then
+    echo "⚠️  Stack is in failed state ($STACK_STATUS). Deleting..."
+    aws cloudformation delete-stack --stack-name $STACK_NAME --region $REGION
+    echo "⏳ Waiting for stack deletion..."
+    aws cloudformation wait stack-delete-complete --stack-name $STACK_NAME --region $REGION
+    echo "✅ Stack deleted successfully"
+fi
+
 # Create deployment package for Lambda
 echo "📦 Creating Lambda deployment package..."
 cd lambda/contact-form

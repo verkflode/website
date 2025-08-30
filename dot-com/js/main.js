@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (target) {
                 const headerOffset = 80;
                 const elementPosition = target.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
                 window.scrollTo({
                     top: offsetPosition,
@@ -91,18 +91,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Header Scroll Effect
     const header = document.querySelector('header');
-    let lastScroll = 0;
+
 
     function handleScroll() {
-        const currentScroll = window.pageYOffset;
+        const currentScroll = window.scrollY;
         
         if (currentScroll > 50) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
         }
-        
-        lastScroll = currentScroll;
+
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -149,8 +148,8 @@ if (contactForm) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="loading"></span> Sending...';
 
-        // Use fetch to send data to your Cloudflare Worker
-        fetch('/api/submit', {
+        // Use fetch to send data to your AWS API
+        fetch('https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
