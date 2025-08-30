@@ -19,7 +19,7 @@
     
     <div id="status" class="status">Loading Turnstile...</div>
     
-    <button id="testBtn" onclick="testInvisibleTurnstile()">Test Invisible Turnstile</button>
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAABvQQQ8dZiQYK5sR" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError"></div>
     
     <div id="result"></div>
     
@@ -27,32 +27,19 @@
     <script>
         document.getElementById('domain').textContent = window.location.hostname;
         
-        function testInvisibleTurnstile() {
-            document.getElementById('status').className = 'status info';
-            document.getElementById('status').innerHTML = '🔄 Testing Invisible Turnstile...';
-            
-            if (typeof turnstile === 'undefined') {
-                onTurnstileError('Turnstile script not loaded');
-                return;
-            }
-            
-            turnstile.execute('#testBtn', {
-                sitekey: '0x4AAAAAABvQQQ8dZiQYK5sR',
-                callback: onTurnstileSuccess,
-                'error-callback': onTurnstileError
-            });
-        }
+        // Turnstile will load automatically with the widget
         
         function onTurnstileSuccess(token) {
             document.getElementById('status').className = 'status success';
-            document.getElementById('status').innerHTML = '✅ SUCCESS - Invisible Turnstile is working!';
+            document.getElementById('status').innerHTML = '✅ SUCCESS - Managed Turnstile is working!';
             document.getElementById('result').innerHTML = `
                 <div class="success">
-                    <h3>✅ Invisible Turnstile Working Perfectly!</h3>
+                    <h3>✅ Managed Turnstile Working Perfectly!</h3>
                     <p><strong>Domain:</strong> ${window.location.hostname}</p>
                     <p><strong>Token received:</strong> ${token.substring(0, 30)}...</p>
-                    <p><strong>Mode:</strong> Invisible (no user interaction needed for normal traffic)</p>
+                    <p><strong>Mode:</strong> Managed (smart challenges only when needed)</p>
                     <p><strong>Status:</strong> This domain is properly configured in Cloudflare</p>
+                    <p><strong>Result:</strong> No more 401 errors! 🎉</p>
                 </div>
             `;
         }
