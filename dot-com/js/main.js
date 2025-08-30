@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     const closeMobileMenu = document.getElementById('closeMobileMenu');
-    const mobileMenuPanel = document.querySelector('.mobile-menu-panel');
+
     const mobileLinks = document.querySelectorAll('.mobile-nav-item');
 
     function openMenu() {
@@ -167,7 +167,7 @@ if (contactForm) {
                 showFormErrors(data.errors || [data.message || "An error occurred. Please try again."]);
             }
         })
-        .catch(error => {
+        .catch(() => {
             // On network error, call your helper function
             showFormErrors(["A network error occurred. Please check your connection."]);
         })
