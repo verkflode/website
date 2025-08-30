@@ -129,57 +129,57 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
-// Form Validation for Contact Form
-const contactForm = document.getElementById('contactForm');
+    // Form Validation for Contact Form
+    const contactForm = document.getElementById('contactForm');
 
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent default browser submission
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default browser submission
 
-        const submitBtn = contactForm.querySelector('button[type="submit"]');
-        const formData = new FormData(contactForm);
-        const formObject = Object.fromEntries(formData.entries());
-        
-        // Hide previous messages
-        document.getElementById('formSuccess').style.display = 'none';
-        document.getElementById('formErrors').style.display = 'none';
-
-        // Disable button and show loading state
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="loading"></span> Sending...';
-
-        // Use fetch to send data to your AWS API
-        fetch('https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formObject),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // On success, call your helper function
-                showFormSuccess(data.message || "Message was sent!");
-            } else {
-                // On failure, call your helper function
-                // The API returns an errors array, so use that or fallback to a single error
-                showFormErrors(data.errors || [data.message || "An error occurred. Please try again."]);
-            }
-        })
-        .catch(() => {
-            // On network error, call your helper function
-            showFormErrors(["A network error occurred. Please check your connection."]);
-        })
-        .finally(() => {
-            // Re-enable button and reset text
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Send Message';
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const formData = new FormData(contactForm);
+            const formObject = Object.fromEntries(formData.entries());
             
-            if (typeof turnstile !== 'undefined') {
-                turnstile.reset();
-            }
+            // Hide previous messages
+            document.getElementById('formSuccess').style.display = 'none';
+            document.getElementById('formErrors').style.display = 'none';
+
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> Sending...';
+
+            // Use fetch to send data to your AWS API
+            fetch('https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formObject),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // On success, call your helper function
+                    showFormSuccess(data.message || "Message was sent!");
+                } else {
+                    // On failure, call your helper function
+                    // The API returns an errors array, so use that or fallback to a single error
+                    showFormErrors(data.errors || [data.message || "An error occurred. Please try again."]);
+                }
+            })
+            .catch(() => {
+                // On network error, call your helper function
+                showFormErrors(["A network error occurred. Please check your connection."]);
+            })
+            .finally(() => {
+                // Re-enable button and reset text
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+                
+                if (typeof turnstile !== 'undefined') {
+                    turnstile.reset();
+                }
+            });
         });
-    });
-}
+    }
 });
