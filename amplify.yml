@@ -1,0 +1,32 @@
+version: 1
+applications:
+  - appRoot: dot-com
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - echo "Building verkflode.com"
+        build:
+          commands:
+            - echo "No build step needed for static site"
+      artifacts:
+        baseDirectory: /
+        files:
+          - '**/*'
+      cache:
+        paths: []
+  - appRoot: dot-se
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - echo "Building verkflode.se"
+        build:
+          commands:
+            - echo "No build step needed for static site"
+      artifacts:
+        baseDirectory: /
+        files:
+          - '**/*'
+      cache:
+        paths: []

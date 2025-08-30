@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <!-- Homepage with language alternatives -->
+    <url>
+        <loc>https://verkflode.com/</loc>
+        <lastmod>2025-08-23</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="sv" href="https://verkflode.se/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://verkflode.com/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://verkflode.com/"/>
+    </url>
+    
+    <!-- About Us -->
+    <url>
+        <loc>https://verkflode.com/about.html</loc>
+        <lastmod>2025-08-23</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="sv" href="https://verkflode.se/om-oss.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://verkflode.com/about.html"/>
+    </url>
+    
+    <!-- Privacy Policy -->
+    <url>
+        <loc>https://verkflode.com/privacy-policy.html</loc>
+        <lastmod>2025-08-18</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+        <xhtml:link rel="alternate" hreflang="sv" href="https://verkflode.se/integritetspolicy.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://verkflode.com/privacy-policy.html"/>
+    </url>
+    
+</urlset>
