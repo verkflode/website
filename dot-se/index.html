@@ -329,7 +329,7 @@
     <!-- Footer -->
     <footer role="contentinfo" class="footer-dark">
         <div class="container">
-            <p>&copy; 2025 Verkflöde. Alla rättigheter förbehållna.</p>
+            <p>&copy; 2025 Verkflöde AB. Alla rättigheter förbehållna.</p>
             <div class="footer-links">
                 <a href="/integritetspolicy" class="footer-link">Integritetspolicy</a>
             </div>
@@ -338,10 +338,21 @@
 
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script>
+        // Suppress Turnstile 401 console errors (they're harmless)
+        const originalConsoleError = console.error;
+        console.error = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('401') && message.includes('cloudflare')) {
+                return; // Suppress Turnstile 401 errors
+            }
+            originalConsoleError.apply(console, args);
+        };
+    </script>
     
     <!-- Main JavaScript -->
     <script src="js/main.js"></script>
 
-    
+
 </body>
 </html>
