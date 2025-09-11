@@ -52,3 +52,12 @@ yarn.lock
 local-analytics.html
 admin/analytics-dashboard.html
 admin/.htaccess
+
+# Kiro IDE files (development only)
+.kiro/
+
+# Development tools (internal use)
+dev-tools/
+
+# Documentation (internal/development)
+docs/
