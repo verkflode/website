@@ -72,9 +72,14 @@
                 </button>
 
                 <!-- Language Switcher -->
-                <a href="https://verkflode.se/om-oss.html" class="lang-switcher" aria-label="Switch to Swedish version">
-                    🇸🇪 Svenska
-                </a>
+                <div class="language-switcher" role="group" aria-label="Language selector">
+                    <span class="lang-link active" aria-current="page" role="button" tabindex="0">
+                        🇬🇧 English
+                    </span>
+                    <a href="https://verkflode.se/om-oss" class="lang-link" hreflang="sv" aria-label="Switch to Swedish version" role="button">
+                        🇸🇪 Svenska
+                    </a>
+                </div>
             </nav>
 
             <!-- Mobile Menu Button -->
@@ -103,6 +108,23 @@
                     <a href="/#mission" class="nav-link mobile-nav-item">Mission</a>
                     <a href="/about" class="nav-link mobile-nav-item">About</a>
                     <a href="/#contact" class="btn btn-primary mobile-nav-cta-container">Request a Demo</a>
+                    
+                    <div class="mobile-nav-footer-container">
+                        <button id="mobileThemeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </button>
+                        
+                        <div class="language-switcher" role="group" aria-label="Language selector">
+                            <span class="lang-link active" aria-current="page" role="button" tabindex="0">
+                                🇬🇧 English
+                            </span>
+                            <a href="https://verkflode.se/om-oss" class="lang-link" hreflang="sv" aria-label="Switch to Swedish version" role="button">
+                                🇸🇪 Svenska
+                            </a>
+                        </div>
+                    </div>
                 </nav>
             </div>
         </div>
@@ -214,7 +236,7 @@
                     eliminating food waste.
                 </p>
                 <div class="cta-section">
-                    <a href="/#contact" class="btn btn-primary">Join Our Mission</a>
+                    <button class="btn btn-primary join-mission-btn">Join Our Mission</button>
                 </div>
             </section>
         </div>
@@ -233,6 +255,9 @@
 
     <!-- Main JavaScript -->
     <script src="js/main.js"></script>
+    
+    <!-- Mission Popup -->
+    <script src="js/mission-popup.js"></script>
 </body>
 
 </html>

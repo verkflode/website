@@ -64,7 +64,8 @@ exports.handler = async (event) => {
             email,
             company: company || 'Not provided',
             message,
-            isSwedish
+            isSwedish,
+            type: requestData.type || 'contact'
         });
 
         if (emailSent) {
@@ -146,17 +147,50 @@ async function validateTurnstile(token) {
     });
 }
 
-async function sendEmail({ name, email, company, message, isSwedish }) {
+async function sendEmail({ name, email, company, message, isSwedish, type = 'contact' }) {
     if (!MAILGUN_API_KEY || !MAILGUN_DOMAIN) {
         console.error('Mailgun credentials not configured');
         return false;
     }
 
-    const subject = isSwedish 
-        ? `Ny kontakt från ${name} via verkflode.se`
-        : `New contact from ${name} via verkflode.com`;
+    let subject, emailBody;
 
-    const emailBody = isSwedish ? `
+    if (type === 'mission_signup') {
+        subject = isSwedish 
+            ? `🌱 Ny uppdragsanmälan från ${name} via verkflode.se`
+            : `🌱 New mission signup from ${name} via verkflode.com`;
+
+        emailBody = isSwedish ? `
+Ny uppdragsanmälan från verkflode.se
+
+Namn: ${name}
+E-post: ${email}
+Företag: ${company}
+
+Hur vill de bidra:
+${message}
+
+---
+Skickat från verkflode.se uppdragsformulär
+        `.trim() : `
+New mission signup from verkflode.com
+
+Name: ${name}
+Email: ${email}
+Company: ${company}
+
+How they want to contribute:
+${message}
+
+---
+Sent from verkflode.com mission signup form
+        `.trim();
+    } else {
+        subject = isSwedish 
+            ? `Ny kontakt från ${name} via verkflode.se`
+            : `New contact from ${name} via verkflode.com`;
+
+        emailBody = isSwedish ? `
 Ny kontaktförfrågan från verkflode.se
 
 Namn: ${name}
@@ -168,7 +202,7 @@ ${message}
 
 ---
 Skickat från verkflode.se kontaktformulär
-    `.trim() : `
+        `.trim() : `
 New contact inquiry from verkflode.com
 
 Name: ${name}
@@ -180,7 +214,8 @@ ${message}
 
 ---
 Sent from verkflode.com contact form
-    `.trim();
+        `.trim();
+    }
 
     const postData = querystring.stringify({
         from: `Verkflöde Website <noreply@${MAILGUN_DOMAIN}>`,

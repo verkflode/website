@@ -144,6 +144,7 @@
 .founder-name {
     margin-top: 1rem;
     margin-bottom: 0;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .founder-bio {
@@ -301,11 +302,7 @@ header.scrolled {
 
 @media (min-width: 768px) {
     .nav-desktop {
-        display: flex;
-    }
-    
-    .mobile-menu-btn {
-        display: none;
+        display: flex !important;
     }
 }
 
@@ -535,6 +532,12 @@ header.scrolled {
     z-index: 101;
 }
 
+@media (min-width: 768px) {
+    .mobile-menu-btn {
+        display: none !important;
+    }
+}
+
 /* Mobile Menu Overlay */
 .mobile-menu {
     position: fixed;
@@ -607,6 +610,11 @@ section {
     #supply-chain,
     #market-urgency {
         padding: 2.5rem 1rem;
+    }
+    
+    /* Contact section mobile padding adjustment */
+    #contact.section-padding {
+        padding-top: 2rem;
     }
 }
 
@@ -1043,6 +1051,11 @@ button[type="submit"]:hover {
     color: white;
 }
 
+/* Contact section specific padding adjustment */
+#contact.section-padding {
+    padding-top: 3rem;
+}
+
 .grid-2 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
@@ -1459,4 +1472,237 @@ button[type="submit"]:hover {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
+}
+/* 
+Mission Popup Styles */
+.mission-popup-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999 !important;
+    padding: 1rem;
+}
+
+.mission-popup-container {
+    background: white;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.mission-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.mission-popup-header h2 {
+    margin: 0;
+    color: var(--forest-green);
+    font-size: 1.5rem;
+}
+
+.mission-popup-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #64748b;
+    padding: 0.25rem;
+    line-height: 1;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.mission-popup-close:hover {
+    background: #f1f5f9;
+    color: var(--forest-green);
+}
+
+.mission-popup-content {
+    padding: 1.5rem;
+}
+
+.mission-popup-description {
+    margin-bottom: 1.5rem;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.mission-form .form-group {
+    margin-bottom: 1rem;
+}
+
+.mission-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.mission-form input,
+.mission-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.mission-form input:focus,
+.mission-form textarea:focus {
+    outline: none;
+    border-color: var(--leaf-green);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.mission-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.error-message {
+    display: block;
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    min-height: 1.25rem;
+}
+
+.form-actions {
+    margin-top: 1.5rem;
+}
+
+.mission-submit-btn {
+    width: 100%;
+    background: var(--forest-green);
+    color: white;
+    border: none;
+    padding: 0.875rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.mission-submit-btn:hover:not(:disabled) {
+    background: #1e5a1e;
+    transform: translateY(-1px);
+}
+
+.mission-submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.success-message {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.success-message h3 {
+    color: var(--forest-green);
+    margin-bottom: 1rem;
+}
+
+.success-message p {
+    color: #475569;
+    line-height: 1.6;
+}
+
+.error-message-container {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.error-message-container h3 {
+    color: #dc2626;
+    margin-bottom: 1rem;
+}
+
+.error-message-container p {
+    color: #475569;
+    line-height: 1.6;
+}
+
+.error-message-container a {
+    color: var(--forest-green);
+    text-decoration: none;
+}
+
+.error-message-container a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .mission-popup-container {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+    }
+    
+    .mission-popup-header,
+    .mission-popup-content {
+        padding: 1rem;
+    }
+    
+    .mission-popup-header h2 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Dark mode support */
+[data-theme="dark"] .mission-popup-container {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .mission-popup-header {
+    border-color: var(--light-gray);
+}
+
+[data-theme="dark"] .mission-form input,
+[data-theme="dark"] .mission-form textarea {
+    background: var(--bg-secondary);
+    border-color: var(--light-gray);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .mission-popup-close:hover {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .mission-popup-description {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .success-message p,
+[data-theme="dark"] .error-message-container p {
+    color: var(--text-primary);
 }
