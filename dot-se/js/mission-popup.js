@@ -6,7 +6,7 @@
 class MissionPopup {
     constructor() {
         this.isOpen = false;
-        this.apiEndpoint = 'https://YOUR_API_ID.execute-api.eu-north-1.amazonaws.com/prod/submit'; // Update with actual endpoint
+        this.apiEndpoint = 'https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit';
         this.init();
     }
 

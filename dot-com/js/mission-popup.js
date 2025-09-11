@@ -6,7 +6,7 @@
 class MissionPopup {
     constructor() {
         this.isOpen = false;
-        this.apiEndpoint = 'https://YOUR_API_ID.execute-api.eu-north-1.amazonaws.com/prod/submit'; // Update with actual endpoint
+        this.apiEndpoint = 'https://kigxkob9q8.execute-api.eu-north-1.amazonaws.com/prod/submit';
         this.init();
     }
 
@@ -70,7 +70,7 @@ class MissionPopup {
                         
                         <div id="missionFormError" class="error-message-container" style="display: none;">
                             <h3>Oops! Something went wrong</h3>
-                            <p>We couldn't process your request right now. Please try again or contact us directly at <a href="mailto:hej@verkflode.com">hej@verkflode.com</a></p>
+                            <p>We couldn't process your request right now. Please try again or contact us directly at <a href="mailto:hej@verkflode.se">hej@verkflode.se</a></p>
                         </div>
                     </div>
                 </div>
