@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Turnstile 401 Error</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Turnstile 401 Error Debug Tool</h1>
+    
+    <div class="test-section">
+        <h2>Current Configuration Test</h2>
+        <p><strong>Site Key:</strong> 0x4AAAAAABvQQQ8dZiQYK5sR</p>
+        <p><strong>Domain:</strong> <span id="currentDomain"></span></p>
+        <p><strong>Protocol:</strong> <span id="currentProtocol"></span></p>
+        
+        <div class="cf-turnstile" 
+             data-sitekey="0x4AAAAAABvQQQ8dZiQYK5sR" 
+             data-callback="onTurnstileSuccess"
+             data-error-callback="onTurnstileError"
+             data-expired-callback="onTurnstileExpired"
+             data-timeout-callback="onTurnstileTimeout"></div>
+        
+        <div id="turnstileStatus"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test with Old Key (for comparison)</h2>
+        <p><strong>Site Key:</strong> 0x4AAAAAABvQQdOf84R3qkkQUnJlv5ni1Uc</p>
+        
+        <div class="cf-turnstile" 
+             data-sitekey="0x4AAAAAABvQQdOf84R3qkkQUnJlv5ni1Uc" 
+             data-callback="onOldTurnstileSuccess"
+             data-error-callback="onOldTurnstileError"></div>
+        
+        <div id="oldTurnstileStatus"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Network Monitoring</h2>
+        <p>Open browser DevTools → Network tab to see Turnstile API calls</p>
+        <p>Look for calls to challenges.cloudflare.com</p>
+        <p>Check for 401 responses in the network tab</p>
+    </div>
+    
+    <script>
+        // Display current domain info
+        document.getElementById('currentDomain').textContent = window.location.hostname;
+        document.getElementById('currentProtocol').textContent = window.location.protocol;
+        
+        // New key callbacks
+        function onTurnstileSuccess(token) {
+            console.log('✅ New key SUCCESS:', token);
+            document.getElementById('turnstileStatus').innerHTML = 
+                '<div class="success">✅ SUCCESS: Token generated successfully!</div>' +
+                '<div class="info">Token: ' + token.substring(0, 20) + '...</div>';
+        }
+        
+        function onTurnstileError(error) {
+            console.error('❌ New key ERROR:', error);
+            document.getElementById('turnstileStatus').innerHTML = 
+                '<div class="error">❌ ERROR: ' + error + '</div>' +
+                '<div class="info">This indicates a 401 or configuration issue</div>';
+        }
+        
+        function onTurnstileExpired() {
+            console.log('⏰ New key EXPIRED');
+            document.getElementById('turnstileStatus').innerHTML = 
+                '<div class="info">⏰ Token expired - this is normal</div>';
+        }
+        
+        function onTurnstileTimeout() {
+            console.log('⏱️ New key TIMEOUT');
+            document.getElementById('turnstileStatus').innerHTML = 
+                '<div class="error">⏱️ TIMEOUT: Turnstile took too long to load</div>';
+        }
+        
+        // Old key callbacks
+        function onOldTurnstileSuccess(token) {
+            console.log('✅ Old key SUCCESS:', token);
+            document.getElementById('oldTurnstileStatus').innerHTML = 
+                '<div class="success">✅ SUCCESS: Old key still works!</div>';
+        }
+        
+        function onOldTurnstileError(error) {
+            console.error('❌ Old key ERROR:', error);
+            document.getElementById('oldTurnstileStatus').innerHTML = 
+                '<div class="error">❌ ERROR: ' + error + '</div>';
+        }
+        
+        // Monitor for 401 errors in console
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            return originalFetch.apply(this, args).then(response => {
+                if (response.status === 401 && response.url.includes('cloudflare')) {
+                    console.error('🚨 401 ERROR detected from Cloudflare:', response.url);
+                    alert('401 Error detected! Check console for details.');
+                }
+                return response;
+            });
+        };
+        
+        // Additional debugging info
+        setTimeout(() => {
+            console.log('🔍 Debugging Info:');
+            console.log('Domain:', window.location.hostname);
+            console.log('Protocol:', window.location.protocol);
+            console.log('User Agent:', navigator.userAgent);
+            console.log('Turnstile loaded:', typeof window.turnstile !== 'undefined');
+        }, 2000);
+    </script>
+</body>
+</html>

@@ -47,3 +47,8 @@ yarn.lock
 # Temporary files
 *.tmp
 *.temp
+
+# Analytics dashboards (keep private)
+local-analytics.html
+admin/analytics-dashboard.html
+admin/.htaccess

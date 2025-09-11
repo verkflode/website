@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Turnstile Key Test</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+    <h1>Testing Turnstile Keys</h1>
+    
+    <h2>New Key: 0x4AAAAAABvQQQ8dZiQYK5sR</h2>
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAABvQQQ8dZiQYK5sR" data-callback="onTurnstileSuccess"></div>
+    
+    <h2>Old Key: 0x4AAAAAABvQQdOf84R3qkkQUnJlv5ni1Uc</h2>
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAABvQQdOf84R3qkkQUnJlv5ni1Uc" data-callback="onTurnstileSuccess"></div>
+    
+    <script>
+        function onTurnstileSuccess(token) {
+            console.log('Turnstile success:', token);
+            alert('Turnstile success! Token: ' + token.substring(0, 20) + '...');
+        }
+    </script>
+</body>
+</html>
