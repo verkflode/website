@@ -44,10 +44,17 @@ if [ "$STACK_STATUS" = "ROLLBACK_COMPLETE" ] || [ "$STACK_STATUS" = "CREATE_FAIL
     echo "✅ Stack deleted successfully"
 fi
 
-# Create deployment package for Lambda
-echo "📦 Creating Lambda deployment package..."
+# Create deployment packages for Lambda functions
+echo "📦 Creating Lambda deployment packages..."
+
+# Contact form Lambda
 cd lambda/contact-form
-zip -r ../../lambda-deployment.zip . -x "*.git*" "*.DS_Store*"
+zip -r ../../contact-form-deployment.zip . -x "*.git*" "*.DS_Store*"
+cd ../..
+
+# Monitoring alert Lambda
+cd lambda/monitoring-alert
+zip -r ../../monitoring-alert-deployment.zip . -x "*.git*" "*.DS_Store*"
 cd ../..
 
 # Deploy CloudFormation stack
@@ -64,35 +71,56 @@ aws cloudformation deploy \
 
 # Update Lambda function code
 echo "🔄 Updating Lambda function code..."
+
+# Update contact form Lambda
 aws lambda update-function-code \
     --function-name $LAMBDA_FUNCTION_NAME \
-    --zip-file fileb://lambda-deployment.zip \
+    --zip-file fileb://contact-form-deployment.zip \
     --region $REGION
 
-# Get API endpoint
-echo "🔗 Getting API endpoint..."
-API_ENDPOINT=$(aws cloudformation describe-stacks \
+# Update monitoring alert Lambda
+aws lambda update-function-code \
+    --function-name verkflode-monitoring-alert \
+    --zip-file fileb://monitoring-alert-deployment.zip \
+    --region $REGION
+
+# Get API endpoints
+echo "🔗 Getting API endpoints..."
+CONTACT_API_ENDPOINT=$(aws cloudformation describe-stacks \
     --stack-name $STACK_NAME \
-    --query 'Stacks[0].Outputs[?OutputKey==`ApiEndpoint`].OutputValue' \
+    --query 'Stacks[0].Outputs[?OutputKey==`ContactApiEndpoint`].OutputValue' \
+    --output text \
+    --region $REGION)
+
+MONITORING_API_ENDPOINT=$(aws cloudformation describe-stacks \
+    --stack-name $STACK_NAME \
+    --query 'Stacks[0].Outputs[?OutputKey==`MonitoringAlertApiEndpoint`].OutputValue' \
     --output text \
     --region $REGION)
 
 echo ""
 echo "✅ Deployment completed successfully!"
 echo ""
-echo "📋 Next steps:"
-echo "1. Update your website forms to use this API endpoint:"
-echo "   $API_ENDPOINT"
+echo "📋 API Endpoints:"
+echo "   Contact Forms: $CONTACT_API_ENDPOINT"
+echo "   Monitoring Alerts: $MONITORING_API_ENDPOINT"
 echo ""
-echo "2. Set up Amplify hosting:"
+echo "📋 Next steps:"
+echo "1. Update your website forms to use the contact API endpoint"
+echo ""
+echo "2. Update monitoring configuration with the monitoring API endpoint:"
+echo "   Edit: dot-se/admin/monitoring/monitoring-config.js"
+echo "   Set: alerts.email.apiEndpoint = '$MONITORING_API_ENDPOINT'"
+echo ""
+echo "3. Set up Amplify hosting:"
 echo "   - Go to AWS Amplify console"
 echo "   - Connect your GitHub repository"
 echo "   - Set up custom domains for verkflode.com and verkflode.se"
 echo ""
-echo "3. Update your DNS records to point to Amplify"
+echo "4. Test email alerts via the Swedish monitoring dashboard"
 
 # Clean up
-rm lambda-deployment.zip
+rm contact-form-deployment.zip monitoring-alert-deployment.zip
 
 echo ""
 echo "🎉 Ready to go live!"

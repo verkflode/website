@@ -15,7 +15,7 @@
     <!-- About Us -->
     <url>
         <loc>https://verkflode.com/about.html</loc>
-        <lastmod>2025-08-23</lastmod>
+        <lastmod>2025-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
         <xhtml:link rel="alternate" hreflang="sv" href="https://verkflode.se/om-oss.html"/>
@@ -25,7 +25,7 @@
     <!-- Privacy Policy -->
     <url>
         <loc>https://verkflode.com/privacy-policy.html</loc>
-        <lastmod>2025-08-18</lastmod>
+        <lastmod>2025-09-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
         <xhtml:link rel="alternate" hreflang="sv" href="https://verkflode.se/integritetspolicy.html"/>

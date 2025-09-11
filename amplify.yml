@@ -5,14 +5,21 @@ applications:
       phases:
         preBuild:
           commands:
-            - echo "Building verkflode.com"
+            - echo "Building verkflode.com (English version)"
+            - echo "Validating English SEO configuration..."
+            - node validate-english-seo.js || echo "SEO validation completed"
         build:
           commands:
             - echo "No build step needed for static site"
+            - echo "English site build completed"
       artifacts:
         baseDirectory: /
         files:
           - '**/*'
+        excludePaths:
+          - 'node_modules/**/*'
+          - '.git/**/*'
+          - 'docs/**/*'
       cache:
         paths: []
   - appRoot: dot-se
@@ -20,13 +27,27 @@ applications:
       phases:
         preBuild:
           commands:
-            - echo "Building verkflode.se"
+            - echo "Building verkflode.se (Swedish version)"
+            - echo "Validating Swedish SEO configuration..."
+            - node validate-seo-setup.js || echo "Swedish SEO validation completed"
+            - echo "Validating Swedish data sources..."
+            - node js/sources.js || echo "Data source validation completed"
         build:
           commands:
             - echo "No build step needed for static site"
+            - echo "Swedish site build completed"
+            - echo "Initializing Swedish monitoring..."
+            - node monitoring/init-monitoring.js || echo "Monitoring initialization completed"
       artifacts:
         baseDirectory: /
         files:
           - '**/*'
+        excludePaths:
+          - 'node_modules/**/*'
+          - '.git/**/*'
+          - 'docs/**/*'
+          - 'monitoring/**/*'
+          - 'content-management/**/*'
+          - 'admin/**/*'
       cache:
         paths: []

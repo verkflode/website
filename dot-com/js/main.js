@@ -181,7 +181,137 @@ document.addEventListener('DOMContentLoaded', function() {
         .finally(() => {
             // Re-enable button and reset text
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Send Message';
+            submitBtn.textContent = 'Get My ROI Analysis';
+        });
+    }
+
+    // Lazy Loading for Images
+    const lazyImages = document.querySelectorAll('img[data-src]');
+    
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+
+        lazyImages.forEach(img => imageObserver.observe(img));
+    } else {
+        // Fallback for older browsers
+        lazyImages.forEach(img => {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+        });
+    }
+
+    // Performance: Debounce scroll events
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Replace scroll listener with debounced version
+    window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', debounce(handleScroll, 10), { passive: true });
+
+    // Mobile Theme Toggle
+    const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+    if (mobileThemeToggle && window.VerkflodeTheme) {
+        mobileThemeToggle.addEventListener('click', () => {
+            window.VerkflodeTheme.toggle();
+        });
+    }
+
+    // Language Switching Enhancement
+    const languageSwitcher = document.querySelector('.language-switcher');
+    if (languageSwitcher) {
+        const langLinks = languageSwitcher.querySelectorAll('.lang-link:not(.active)');
+        
+        langLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Add loading state for better UX
+                const originalText = this.textContent;
+                this.style.opacity = '0.7';
+                this.style.pointerEvents = 'none';
+                
+                // Add a small delay to show the loading state
+                setTimeout(() => {
+                    // The browser will navigate to the new URL
+                    window.location.href = this.href;
+                }, 100);
+            });
+            
+            // Add keyboard navigation
+            link.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+    }
+
+    // Add language preference detection and storage
+    function detectAndStoreLanguagePreference() {
+        const currentLang = document.documentElement.lang;
+        const preferredLang = localStorage.getItem('verkflode-preferred-language');
+        
+        // Store current language preference
+        if (currentLang) {
+            localStorage.setItem('verkflode-preferred-language', currentLang);
+        }
+        
+        // Add language switching analytics (if tracking is available)
+        if (window.gtag && preferredLang && preferredLang !== currentLang) {
+            window.gtag('event', 'language_switch', {
+                'previous_language': preferredLang,
+                'new_language': currentLang,
+                'event_category': 'user_interaction'
+            });
+        }
+    }
+    
+    detectAndStoreLanguagePreference();
+
+    // Add keyboard navigation for accessibility
+    const focusableElements = 'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
+    const modal = document.querySelector('.mobile-menu-panel');
+    
+    if (modal) {
+        const focusableContent = modal.querySelectorAll(focusableElements);
+        const firstFocusableElement = focusableContent[0];
+        const lastFocusableElement = focusableContent[focusableContent.length - 1];
+
+        document.addEventListener('keydown', function(e) {
+            if (!mobileMenu.classList.contains('active')) return;
+
+            let isTabPressed = e.key === 'Tab';
+
+            if (!isTabPressed) return;
+
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusableElement) {
+                    lastFocusableElement.focus();
+                    e.preventDefault();
+                }
+            } else {
+                if (document.activeElement === lastFocusableElement) {
+                    firstFocusableElement.focus();
+                    e.preventDefault();
+                }
+            }
         });
     }
 });

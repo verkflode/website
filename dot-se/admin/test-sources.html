@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Swedish Data Sources</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        .test-result { padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .pass { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .fail { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .source-link { color: #0066cc; text-decoration: none; }
+        .source-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Swedish Data Sources Verification Test</h1>
+    
+    <div id="test-results"></div>
+    
+    <h2>Manual Source Verification</h2>
+    <p>Click each link to manually verify sources are accessible:</p>
+    
+    <ul>
+        <li><a href="https://www.sverigesradio.se/artikel/matsvinn-pa-restauranger-okar-de-har-losningen" target="_blank" class="source-link">Sveriges Radio - Food Waste Increase</a></li>
+        <li><a href="https://www.regeringen.se/regeringens-politik/miljo-och-klimat/matsvinn/" target="_blank" class="source-link">Swedish Government - 2025 Target</a></li>
+        <li><a href="https://www.visita.se/branschstatistik/" target="_blank" class="source-link">Visita - Industry Margins</a></li>
+        <li><a href="https://www.wrap.org.uk/resources/report/food-waste-reduction-roadmap" target="_blank" class="source-link">WRAP - ROI Data</a></li>
+        <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022L2464" target="_blank" class="source-link">EU Official Journal - CSRD</a></li>
+        <li><a href="https://www.naturvardsverket.se/amnesomraden/avfall/matsvinn/samverkan-mot-matsvinn/" target="_blank" class="source-link">Naturvårdsverket - SAMS</a></li>
+    </ul>
+
+    <script>
+        async function testDataSources() {
+            const results = document.getElementById('test-results');
+            
+            // Test 1: Load data sources JSON
+            try {
+                const response = await fetch('/admin/data-sources.json');
+                const data = await response.json();
+                
+                if (data.swedishDataSources) {
+                    addResult('✅ Data sources JSON loaded successfully', 'pass');
+                    
+                    // Test 2: Verify all required sources exist
+                    const requiredSources = [
+                        'foodWasteIncrease',
+                        'missed2025Target', 
+                        'industryMargins',
+                        'roiClaim',
+                        'csrdRequirements',
+                        'samsInitiative'
+                    ];
+                    
+                    let allSourcesPresent = true;
+                    requiredSources.forEach(source => {
+                        if (!data.swedishDataSources[source]) {
+                            addResult(`❌ Missing source: ${source}`, 'fail');
+                            allSourcesPresent = false;
+                        }
+                    });
+                    
+                    if (allSourcesPresent) {
+                        addResult('✅ All required sources present', 'pass');
+                    }
+                    
+                    // Test 3: Verify source structure
+                    let allSourcesValid = true;
+                    Object.keys(data.swedishDataSources).forEach(key => {
+                        const source = data.swedishDataSources[key];
+                        if (!source.claim || !source.source || !source.authority || !source.verified) {
+                            addResult(`❌ Invalid source structure: ${key}`, 'fail');
+                            allSourcesValid = false;
+                        }
+                    });
+                    
+                    if (allSourcesValid) {
+                        addResult('✅ All sources have valid structure', 'pass');
+                    }
+                    
+                } else {
+                    addResult('❌ Invalid data sources structure', 'fail');
+                }
+                
+            } catch (error) {
+                addResult(`❌ Failed to load data sources: ${error.message}`, 'fail');
+            }
+            
+            // Test 4: Check if sources section exists in main page
+            try {
+                const mainResponse = await fetch('/');
+                const mainHtml = await mainResponse.text();
+                
+                if (mainHtml.includes('id="sources"')) {
+                    addResult('✅ Sources section found in main page', 'pass');
+                } else {
+                    addResult('❌ Sources section not found in main page', 'fail');
+                }
+                
+                if (mainHtml.includes('source-link')) {
+                    addResult('✅ Source links found in main page', 'pass');
+                } else {
+                    addResult('❌ Source links not found in main page', 'fail');
+                }
+                
+            } catch (error) {
+                addResult(`❌ Failed to check main page: ${error.message}`, 'fail');
+            }
+        }
+        
+        function addResult(message, type) {
+            const results = document.getElementById('test-results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+        
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', testDataSources);
+    </script>
+</body>
+</html>

@@ -1,10 +1,14 @@
-# Robots.txt for verkflode.se
+# Robots.txt for verkflode.se - Swedish Crisis Messaging Site
 
 User-agent: *
 Allow: /
 Disallow: /admin/
-Disallow: /private/
-Disallow: /*.pdf$
+Disallow: /config/
+Disallow: /docs/
+Disallow: /test-*
+Disallow: /*.md$
+Disallow: /*.json$
+Disallow: /*.js$
 
 # Sitemap location
 Sitemap: https://verkflode.se/sitemap.xml
@@ -12,17 +16,19 @@ Sitemap: https://verkflode.se/sitemap.xml
 # Crawl delay (in seconds) for respectful crawling
 Crawl-delay: 1
 
-# Major search engine crawlers
+# Major search engine crawlers - prioritize for Swedish market
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Slurp
 Allow: /
 
-# Block bad bots
+# Block SEO tools and aggressive crawlers
 User-agent: SemrushBot
 Disallow: /
 
@@ -30,4 +36,10 @@ User-agent: AhrefsBot
 Disallow: /
 
 User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
 Disallow: /

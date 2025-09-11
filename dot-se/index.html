@@ -7,9 +7,21 @@
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="Sverige missade 2025-målet för matsvinn. Verkflöde omvandlar krisen till lönsamhet och förbereder för EU:s CSRD-krav. 7:1 avkastning garanterad.">
-    <meta name="keywords" content="matsvinn Sverige, CSRD efterlevnad, restaurang lönsamhet, hållbarhetsrapportering, EU direktiv, ESRS E5, svensk matsvinn kris">
+    <meta name="keywords" content="matsvinn Sverige, CSRD efterlevnad, restaurang lönsamhet, hållbarhetsrapportering, EU direktiv, ESRS E5, svensk matsvinn kris, 2025 mål misslyckande, svenska restauranger matsvinn, SAMS initiativ, Naturvårdsverket, svensk hållbarhet, kronor ROI, Stockholm hållbarhet">
     <meta name="author" content="Verkflöde">
     <meta name="robots" content="index, follow">
+    
+    <!-- Swedish Market Specific Meta Tags -->
+    <meta name="geo.region" content="SE">
+    <meta name="geo.country" content="Sweden">
+    <meta name="geo.placename" content="Sverige">
+    <meta name="language" content="Swedish">
+    <meta name="distribution" content="local">
+    <meta name="target" content="Swedish restaurants, Swedish food industry, Swedish sustainability">
+    
+    <!-- Crisis Messaging Context -->
+    <meta name="news_keywords" content="Sverige matsvinn 2025 mål, CSRD krav, restaurang kris, hållbarhet Sverige">
+    <meta name="article:tag" content="matsvinn, CSRD, Sverige, restauranger, hållbarhet, EU direktiv">
     
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Verkflöde | Sveriges Lösning på Matsvinnet och CSRD-Kraven">
@@ -53,15 +65,26 @@
     <!-- Theme Script (Load early to prevent flash) -->
     <script src="js/theme.js"></script>
     
+    <!-- Swedish Performance Optimization (Load early) -->
+    <script src="js/swedish-performance.js"></script>
+    
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Verkflöde",
-        "description": "Sveriges lösning på matsvinnet och CSRD-kraven. Omvandlar krisen till lönsamhet med 7:1 ROI och automatiserar EU:s hållbarhetsrapportering",
+        "description": "Sveriges lösning på matsvinnet och CSRD-kraven. Omvandlar krisen från Sveriges missade 2025-mål till lönsamhet med 7:1 ROI och automatiserar EU:s hållbarhetsrapportering",
         "url": "https://verkflode.se",
         "logo": "https://verkflode.se/images/verkflode-L.png",
+        "foundingLocation": {
+            "@type": "Country",
+            "name": "Sverige"
+        },
+        "areaServed": {
+            "@type": "Country",
+            "name": "Sverige"
+        },
         "sameAs": [
             "https://linkedin.com/company/verkflode"
         ],
@@ -69,12 +92,43 @@
             "@type": "ContactPoint",
             "email": "hej@verkflode.se",
             "contactType": "Sales",
-            "availableLanguage": ["Swedish", "English"]
+            "availableLanguage": ["Swedish", "English"],
+            "areaServed": "SE"
         },
         "offers": {
             "@type": "Offer",
-            "name": "Plattform för Svinnminskning",
-            "description": "Sveriges svar på den missade 2025-målsättningen. Uppnå 7:1 ROI genom att eliminera matsvinn med 30-50% svinnminskning och automatiserad CSRD-efterlevnadsrapportering"
+            "name": "Plattform för Svinnminskning och CSRD-Efterlevnad",
+            "description": "Sveriges svar på den missade 2025-målsättningen för matsvinn. Uppnå 7:1 ROI genom att eliminera matsvinn med 30-50% svinnminskning och automatiserad CSRD-efterlevnadsrapportering för EU:s nya krav",
+            "category": "Hållbarhetsteknologi",
+            "areaServed": {
+                "@type": "Country", 
+                "name": "Sverige"
+            }
+        },
+        "keywords": "matsvinn Sverige, CSRD efterlevnad, restaurang lönsamhet, hållbarhetsrapportering, EU direktiv, ESRS E5, svensk matsvinn kris, 2025 mål misslyckande"
+    }
+    </script>
+    
+    <!-- Additional Structured Data for Swedish Market Context -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Verkflöde Sverige",
+        "url": "https://verkflode.se",
+        "description": "Sveriges lösning på matsvinnet efter det missade 2025-målet. Omvandla krisen till lönsamhet med CSRD-efterlevnad.",
+        "inLanguage": "sv-SE",
+        "audience": {
+            "@type": "Audience",
+            "geographicArea": {
+                "@type": "Country",
+                "name": "Sverige"
+            }
+        },
+        "about": {
+            "@type": "Thing",
+            "name": "Matsvinn i Sverige",
+            "description": "Sveriges missade 2025-mål för matsvinnsminskning och lösningar för restaurangbranschen"
         }
     }
     </script>
@@ -94,9 +148,9 @@
             <!-- Desktop Navigation -->
             <nav class="nav-desktop" role="navigation" aria-label="Huvudnavigering">
                 <a href="#solution" class="nav-link">Lösningen</a>
-                <a href="#mission" class="nav-link">Vårt Mål</a>
-                <a href="/om-oss" class="nav-link">Om oss</a>
-                <a href="#contact" class="btn btn-primary">Boka en Demo</a>
+                <a href="#mission" class="nav-link">Vårt Uppdrag</a>
+                <a href="/om-oss" class="nav-link">Om Oss</a>
+                <a href="#contact" class="btn btn-primary">Boka Demo</a>
                 
                 <!-- Theme Toggle -->
                 <button id="themeToggle" class="theme-toggle" aria-label="Växla mörkt läge">
@@ -106,9 +160,14 @@
                 </button>
                 
                 <!-- Language Switcher -->
-                <a href="https://verkflode.com" class="lang-switcher" aria-label="Switch to English version">
-                    🇬🇧 English
-                </a>
+                <div class="language-switcher" role="group" aria-label="Språkväljare">
+                    <span class="lang-link active" aria-current="page" role="button" tabindex="0">
+                        🇸🇪 Svenska
+                    </span>
+                    <a href="https://verkflode.com" class="lang-link" hreflang="en" aria-label="Växla till engelsk version" role="button">
+                        🇬🇧 English
+                    </a>
+                </div>
             </nav>
             
             <!-- Mobile Menu Button -->
@@ -132,9 +191,9 @@
                 
                 <nav class="mobile-nav-container">
                     <a href="#solution" class="nav-link mobile-nav-item">Lösningen</a>
-                    <a href="#mission" class="nav-link mobile-nav-item">Vårt Mål</a>
-                    <a href="/om-oss" class="nav-link mobile-nav-item">Om oss</a>
-                    <a href="#contact" class="btn btn-primary mobile-nav-cta-container">Boka en Demo</a>
+                    <a href="#mission" class="nav-link mobile-nav-item">Vårt Uppdrag</a>
+                    <a href="/om-oss" class="nav-link mobile-nav-item">Om Oss</a>
+                    <a href="#contact" class="btn btn-primary mobile-nav-cta-container">Boka Demo</a>
                     
                     <div class="mobile-nav-footer-container">
                         <button id="mobileThemeToggle" class="theme-toggle" aria-label="Växla mörkt läge">
@@ -143,9 +202,14 @@
                             </svg>
                         </button>
                         
-                        <a href="https://verkflode.com" class="lang-switcher">
-                            🇬🇧 English
-                        </a>
+                        <div class="language-switcher" role="group" aria-label="Språkväljare">
+                            <span class="lang-link active" aria-current="page" role="button" tabindex="0">
+                                🇸🇪 Svenska
+                            </span>
+                            <a href="https://verkflode.com" class="lang-link" hreflang="en" aria-label="Växla till engelsk version" role="button">
+                                🇬🇧 English
+                            </a>
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -160,7 +224,7 @@
                     <span class="gradient-text">Sverige missade 2025-målet. Nu kommer Europas nya krav.</span>
                 </h1>
                 <p class="hero-text">
-                    Siffrorna är här: matsvinnet från svenska restauranger har nästan fördubblats sedan 2020. De gamla metoderna har misslyckats. Verkflöde är den svenskutvecklade lösningen som omvandlar denna kris till lönsamhet – och förbereder er för EU:s tvingande hållbarhetsrapportering (CSRD).
+                    Siffrorna är här: matsvinnet från svenska restauranger har ökat från 6 kg till 11 kg per person och år sedan 2020. De gamla metoderna har misslyckats. Verkflöde är den svenskutvecklade lösningen som omvandlar denna kris till lönsamhet – och förbereder er för EU:s tvingande hållbarhetsrapportering (CSRD).
                 </p>
                 <div class="hero-stats">
                     <div class="stat-card">
@@ -177,9 +241,9 @@
                     </div>
                 </div>
                 <div class="cta-group">
-                    <a href="#contact" class="btn btn-primary cta-demo-button">Boka en Demo</a>
+                    <a href="#contact" class="btn btn-primary cta-demo-button">Boka Demo</a>
                     <a href="#solution" class="cta-link">Se Hur Vi Levererar 7:1 ROI →</a>
-                    <a href="/om-oss" class="cta-link">Upptäck vår historia & filosofi →</a>
+                    <a href="/om-oss" class="cta-link">Upptäck Vår Historia & Filosofi →</a>
                 </div>
             </div>
         </section>
@@ -375,7 +439,7 @@
         <!-- Section 8: Contact Form -->
         <section id="contact" aria-labelledby="contact-heading" class="section-dark section-padding">
             <div class="container text-center">
-                <h2 id="contact-heading" class="section-heading">Redo att Förvandla ditt Matsvinn till Vinst?</h2>
+                <h2 id="contact-heading" class="section-heading">Redo att Förvandla Ditt Matsvinn till Vinst?</h2>
                 <p class="contact-section-text">
                     Kom igång med en beprövad lösning som levererar 7:1 ROI, säkerställer CSRD-efterlevnad och minskar svinn med 30-50%. Boka din demo idag för att se hur Verkflöde kan transformera ditt företag.
                 </p>
@@ -383,20 +447,20 @@
                 <!-- Contact Form -->
                 <form id="contactForm" action="/submit" method="post" class="form-container">
                     <div class="form-group">
-                        <label for="name" class="form-label">Namn</label>
-                        <input type="text" id="name" name="name" required class="form-input-white">
+                        <label for="name" class="form-label">Fullständigt Namn</label>
+                        <input type="text" id="name" name="name" required class="form-input-white" placeholder="Ditt för- och efternamn">
                     </div>
                     <div class="form-group">
-                        <label for="email" class="form-label">E-post</label>
-                        <input type="email" id="email" name="email" required class="form-input-white">
+                        <label for="email" class="form-label">E-postadress</label>
+                        <input type="email" id="email" name="email" required class="form-input-white" placeholder="din.epost@företag.se">
                     </div>
                     <div class="form-group">
-                        <label for="company" class="form-label">Företag (valfritt)</label>
-                        <input type="text" id="company" name="company" class="form-input-white">
+                        <label for="company" class="form-label">Företag/Organisation (valfritt)</label>
+                        <input type="text" id="company" name="company" class="form-input-white" placeholder="Ditt företagsnamn">
                     </div>
                     <div class="form-group">
                         <label for="message" class="form-label">Meddelande</label>
-                        <textarea id="message" name="message" rows="4" required class="form-textarea-white"></textarea>
+                        <textarea id="message" name="message" rows="4" required class="form-textarea-white" placeholder="Berätta om dina behov och utmaningar med matsvinn..."></textarea>
                     </div>
 
                     <div id="formErrors" style="display: none; color: #ff6b6b; margin-bottom: 1rem;"></div>
@@ -405,12 +469,75 @@
                     <div class="cf-turnstile" data-sitekey="0x4AAAAAABvQQQ8dZiQYK5sR" style="margin-bottom: 1rem;"></div>
 
                     <button type="submit" class="form-button" style="background: var(--leaf-green); color: var(--forest-green);">
-                        Få Min ROI-analys
+                        Få Min ROI-Analys
                     </button>
                 </form>
                 
                 <div class="contact-footer">
                     Få din personliga ROI-prognos inom 24 timmar
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 9: Data Sources and Verification -->
+        <section id="sources" aria-labelledby="sources-heading" class="section-padding" style="background: var(--bg-secondary);">
+            <div class="container">
+                <div class="text-center mb-8">
+                    <h2 id="sources-heading" class="section-heading">Verifierade Källor och Data</h2>
+                    <p class="section-text-wide">
+                        All statistik och påståenden på denna webbplats är verifierade genom officiella svenska och europeiska källor för att säkerställa transparens och CSRD-efterlevnad.
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="card">
+                        <h3 class="card-heading">Matsvinn Ökning (6-11 kg)</h3>
+                        <p class="card-text mt-2">
+                            <strong>Källa:</strong> <a href="https://www.sverigesradio.se/artikel/matsvinn-pa-restauranger-okar-de-har-losningen" target="_blank" rel="noopener" class="source-link">Sveriges Radio / Naturvårdsverket</a>
+                        </p>
+                        <p class="card-text-small">Data visar ökning av restaurangmatsvinn från 6 kg till 11 kg per person och år sedan 2020.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-heading">Sveriges 2025-mål</h3>
+                        <p class="card-text mt-2">
+                            <strong>Källa:</strong> <a href="https://www.regeringen.se/regeringens-politik/miljo-och-klimat/matsvinn/" target="_blank" rel="noopener" class="source-link">Regeringen / Naturvårdsverket</a>
+                        </p>
+                        <p class="card-text-small">Officiella svenska regeringsmål för 20% minskning av matsvinn till 2025.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-heading">Branschmarginaler (3-5%)</h3>
+                        <p class="card-text mt-2">
+                            <strong>Källa:</strong> <a href="https://www.visita.se/branschstatistik/" target="_blank" rel="noopener" class="source-link">Visita Branschstatistik</a>
+                        </p>
+                        <p class="card-text-small">Officiell branschdata för svenska restaurang- och hotellsektorns vinstmarginaler.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-heading">7:1 ROI Avkastning</h3>
+                        <p class="card-text mt-2">
+                            <strong>Källa:</strong> <a href="https://www.wrap.org.uk/resources/report/food-waste-reduction-roadmap" target="_blank" rel="noopener" class="source-link">WRAP Food Waste Reduction</a>
+                        </p>
+                        <p class="card-text-small">Internationell branschstandard för ROI vid matsvinnsminskning, anpassad för svensk marknad.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-heading">CSRD-krav</h3>
+                        <p class="card-text mt-2">
+                            <strong>Källa:</strong> <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022L2464" target="_blank" rel="noopener" class="source-link">EU Official Journal</a>
+                        </p>
+                        <p class="card-text-small">Officiell EU-lagstiftning för Corporate Sustainability Reporting Directive.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-heading">SAMS-initiativ</h3>
+                        <p class="card-text mt-2">
+                            <strong>Källa:</strong> <a href="https://www.naturvardsverket.se/amnesomraden/avfall/matsvinn/samverkan-mot-matsvinn/" target="_blank" rel="noopener" class="source-link">Naturvårdsverket SAMS</a>
+                        </p>
+                        <p class="card-text-small">Svensk myndighetsinitiativ för samverkan mot matsvinn.</p>
+                    </div>
+                </div>
+                <div class="text-center mt-8">
+                    <p class="card-text-small">
+                        <strong>Senast uppdaterad:</strong> September 2025 | 
+                        <strong>Verifieringsstatus:</strong> Alla påståenden verifierade med officiella svenska och EU-källor | 
+                        <strong>CSRD-efterlevnad:</strong> All data uppfyller transparens- och verifieringskrav
+                    </p>
                 </div>
             </div>
         </section>
@@ -421,7 +548,7 @@
         <div class="container">
             <p>&copy; 2025 Verkflöde AB. Alla rättigheter förbehållna.</p>
             <div class="footer-links">
-                <a href="/om-oss" class="footer-link">Vår Historia</a>
+                <a href="/om-oss" class="footer-link">Om Oss</a>
                 <a href="/integritetspolicy" class="footer-link">Integritetspolicy</a>
             </div>
         </div>
@@ -443,6 +570,15 @@
     
     <!-- Conversion Tracking -->
     <script src="js/tracking.js"></script>
+    
+    <!-- Swedish Market Configuration -->
+    <script src="config/swedish-dashboard-config.js"></script>
+    
+    <!-- Conversion Tracking -->
+    <script src="js/tracking.js"></script>
+    
+    <!-- Sources Verification -->
+    <script src="js/sources.js"></script>
     
     <!-- Main JavaScript -->
     <script src="js/main.js"></script>

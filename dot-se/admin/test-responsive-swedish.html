@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verkflöde Responsive Test - Swedish Content</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .test-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            border: 2px solid var(--leaf-green);
+            border-radius: 1rem;
+        }
+        .test-title {
+            color: var(--forest-green);
+            margin-bottom: 1rem;
+        }
+        .viewport-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--forest-green);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 1000;
+        }
+        .character-test {
+            font-size: 2rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+        }
+        .long-swedish-text {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="viewport-indicator" id="viewportIndicator">
+        Viewport: <span id="viewportSize"></span>
+    </div>
+
+    <div class="test-container">
+        <h1 class="test-title">Verkflöde Responsive Design Test - Swedish Content</h1>
+        
+        <!-- Swedish Character Encoding Test -->
+        <div class="test-section">
+            <h2 class="test-title">1. Swedish Character Encoding Test</h2>
+            <div class="character-test">
+                <p>Vanliga svenska tecken: å ä ö Å Ä Ö</p>
+                <p>I mening: "Kött, kött, kött - så mycket kött på menyn!"</p>
+                <p>Företagsnamn: Björk & Åström AB, Malmö</p>
+                <p>Specialtecken: © ® ™ € £ § ¶</p>
+            </div>
+        </div>
+
+        <!-- Hero Section Test -->
+        <div class="test-section">
+            <h2 class="test-title">2. Hero Section Responsive Test</h2>
+            <div class="hero-section section-padding">
+                <div class="container text-center">
+                    <h1 class="hero-heading-narrow">
+                        <span class="gradient-text">Sverige missade 2025-målet. Nu kommer Europas nya krav.</span>
+                    </h1>
+                    <p class="hero-text">
+                        Siffrorna är här: matsvinnet från svenska restauranger har ökat från 6 kg till 11 kg per person och år sedan 2020. De gamla metoderna har misslyckats. Verkflöde är den svenskutvecklade lösningen som omvandlar denna kris till lönsamhet – och förbereder er för EU:s tvingande hållbarhetsrapportering (CSRD).
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <div class="stat-number">7:1</div>
+                            <p class="stat-label">Avkastning</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">30-50%</div>
+                            <p class="stat-label">Minskning</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">CSRD</div>
+                            <p class="stat-label">Redo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Long Swedish Text Test -->
+        <div class="test-section">
+            <h2 class="test-title">3. Long Swedish Text Wrapping Test</h2>
+            <div class="long-swedish-text">
+                <h3>Extremt långa svenska ord och meningar:</h3>
+                <p>Realisationsvinstbeskattning, arbetslöshetsförsäkring, sjukförsäkringsförmåner, och andra långa sammansatta ord som är vanliga i svenska.</p>
+                <p>Här är en mycket lång mening som innehåller många svenska ord och tecken: "Företagets hållbarhetsrapportering måste inkludera detaljerad information om matsvinnshantering, energiförbrukning, och miljöpåverkan enligt EU:s nya direktiv för företagens hållbarhetsrapportering (CSRD) som träder i kraft 2024 och kommer att påverka tusentals svenska företag."</p>
+                <p>URL-test: https://www.verkflode.se/hållbarhetsrapportering-och-matsvinnshantering-för-svenska-restauranger</p>
+            </div>
+        </div>
+
+        <!-- Navigation Test -->
+        <div class="test-section">
+            <h2 class="test-title">4. Navigation Responsive Test</h2>
+            <nav class="nav-desktop" style="display: flex; position: relative;">
+                <a href="#" class="nav-link">Lösningen</a>
+                <a href="#" class="nav-link">Vårt Uppdrag</a>
+                <a href="#" class="nav-link">Om Oss</a>
+                <a href="#" class="btn btn-primary">Boka Demo</a>
+                <div class="language-switcher">
+                    <span class="lang-link active">🇸🇪 Svenska</span>
+                    <a href="#" class="lang-link">🇬🇧 English</a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Form Test -->
+        <div class="test-section">
+            <h2 class="test-title">5. Form Responsive Test</h2>
+            <form class="form-container">
+                <div class="form-group">
+                    <label for="testName" class="form-label">Fullständigt Namn</label>
+                    <input type="text" id="testName" class="form-input-white" placeholder="Ditt för- och efternamn">
+                </div>
+                <div class="form-group">
+                    <label for="testEmail" class="form-label">E-postadress</label>
+                    <input type="email" id="testEmail" class="form-input-white" placeholder="din.epost@företag.se">
+                </div>
+                <div class="form-group">
+                    <label for="testMessage" class="form-label">Meddelande</label>
+                    <textarea id="testMessage" rows="4" class="form-textarea-white" placeholder="Berätta om dina behov och utmaningar med matsvinn..."></textarea>
+                </div>
+                <button type="submit" class="form-button" style="background: var(--leaf-green); color: var(--forest-green);">
+                    Få Min ROI-Analys
+                </button>
+            </form>
+        </div>
+
+        <!-- Grid Layout Test -->
+        <div class="test-section">
+            <h2 class="test-title">6. Grid Layout Responsive Test</h2>
+            <div class="grid md:grid-cols-3">
+                <div class="card">
+                    <h3 class="card-heading">Värdekedjerapportering</h3>
+                    <p class="card-text">Stora företag måste rapportera om hela sin leveranskedja under CSRD. Dina hållbarhetsdata blir deras efterlevnadskrav.</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-heading">Föredragen Partnerstatus</h3>
+                    <p class="card-text">Hotell, cateringföretag och storkök kommer att prioritera leverantörer som kan tillhandahålla granskningsbara hållbarhetsmått.</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-heading">Konkurrensfördel</h3>
+                    <p class="card-text">Positionera din restaurang som det hållbara valet för företagskunder som behöver verifierbar miljödata.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Test -->
+        <div class="test-section">
+            <h2 class="test-title">7. Performance Test Results</h2>
+            <div id="performanceResults">
+                <p>Loading performance metrics...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/swedish-performance.js"></script>
+    <script>
+        // Viewport size indicator
+        function updateViewportIndicator() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            document.getElementById('viewportSize').textContent = `${width}x${height}px`;
+            
+            // Add breakpoint indicator
+            let breakpoint = '';
+            if (width <= 480) breakpoint = ' (XS)';
+            else if (width <= 767) breakpoint = ' (SM)';
+            else if (width <= 1023) breakpoint = ' (MD)';
+            else if (width <= 1279) breakpoint = ' (LG)';
+            else breakpoint = ' (XL)';
+            
+            document.getElementById('viewportSize').textContent += breakpoint;
+        }
+
+        updateViewportIndicator();
+        window.addEventListener('resize', updateViewportIndicator);
+
+        // Performance testing
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const performanceResults = document.getElementById('performanceResults');
+                let results = '<h4>Performance Metrics:</h4><ul>';
+                
+                // Check font loading
+                const testElement = document.createElement('span');
+                testElement.textContent = 'åäöÅÄÖ';
+                testElement.style.fontFamily = 'Inter, sans-serif';
+                document.body.appendChild(testElement);
+                const computedFont = window.getComputedStyle(testElement).fontFamily;
+                document.body.removeChild(testElement);
+                
+                results += `<li>Font Family: ${computedFont}</li>`;
+                results += `<li>Character Set: ${document.characterSet}</li>`;
+                results += `<li>Document Language: ${document.documentElement.lang}</li>`;
+                results += `<li>Viewport Width: ${window.innerWidth}px</li>`;
+                results += `<li>Device Pixel Ratio: ${window.devicePixelRatio}</li>`;
+                
+                // Check if Swedish characters render correctly
+                const swedishTest = /[åäöÅÄÖ]/.test(document.body.textContent);
+                results += `<li>Swedish Characters Detected: ${swedishTest ? 'Yes' : 'No'}</li>`;
+                
+                // Check CSS support
+                const supportsGrid = CSS.supports('display', 'grid');
+                const supportsFlexbox = CSS.supports('display', 'flex');
+                const supportsClamp = CSS.supports('font-size', 'clamp(1rem, 2vw, 2rem)');
+                
+                results += `<li>CSS Grid Support: ${supportsGrid ? 'Yes' : 'No'}</li>`;
+                results += `<li>CSS Flexbox Support: ${supportsFlexbox ? 'Yes' : 'No'}</li>`;
+                results += `<li>CSS Clamp Support: ${supportsClamp ? 'Yes' : 'No'}</li>`;
+                
+                results += '</ul>';
+                performanceResults.innerHTML = results;
+            }, 1000);
+        });
+
+        // Test Swedish character input
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', function() {
+                if (/[åäöÅÄÖ]/.test(this.value)) {
+                    this.style.borderColor = 'var(--leaf-green)';
+                    console.log('Swedish characters detected in input:', this.value);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

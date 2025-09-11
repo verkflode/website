@@ -41,7 +41,7 @@ Resources:
                   - logs:PutLogEvents
                 Resource: '*'
 
-  # Lambda Function
+  # Lambda Function for Contact Forms
   ContactFormFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -64,6 +64,28 @@ Resources:
           TURNSTILE_SECRET_KEY: !Ref TurnstileSecretKey
       Timeout: 30
 
+  # Lambda Function for Monitoring Alerts
+  MonitoringAlertFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: verkflode-monitoring-alert
+      Runtime: nodejs18.x
+      Handler: index.handler
+      Role: !GetAtt ContactFormLambdaRole.Arn
+      Code:
+        ZipFile: |
+          exports.handler = async (event) => {
+            return {
+              statusCode: 200,
+              body: JSON.stringify({ message: 'Placeholder - deploy actual code' })
+            };
+          };
+      Environment:
+        Variables:
+          MAILGUN_API_KEY: !Ref MailgunApiKey
+          MAILGUN_DOMAIN: !Ref MailgunDomain
+      Timeout: 30
+
   # API Gateway
   ContactFormApi:
     Type: AWS::ApiGateway::RestApi
@@ -74,13 +96,21 @@ Resources:
         Types:
           - REGIONAL
 
-  # API Gateway Resource
+  # API Gateway Resource for Contact Form
   ContactFormResource:
     Type: AWS::ApiGateway::Resource
     Properties:
       RestApiId: !Ref ContactFormApi
       ParentId: !GetAtt ContactFormApi.RootResourceId
       PathPart: submit
+
+  # API Gateway Resource for Monitoring Alerts
+  MonitoringAlertResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ContactFormApi
+      ParentId: !GetAtt ContactFormApi.RootResourceId
+      PathPart: monitoring-alert
 
   # API Gateway Method
   ContactFormMethod:
@@ -101,7 +131,26 @@ Resources:
             method.response.header.Access-Control-Allow-Headers: true
             method.response.header.Access-Control-Allow-Methods: true
 
-  # OPTIONS method for CORS
+  # Monitoring Alert Method
+  MonitoringAlertMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ContactFormApi
+      ResourceId: !Ref MonitoringAlertResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MonitoringAlertFunction.Arn}/invocations'
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+
+  # OPTIONS method for CORS - Contact Form
   ContactFormOptionsMethod:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -128,11 +177,47 @@ Resources:
             method.response.header.Access-Control-Allow-Headers: true
             method.response.header.Access-Control-Allow-Methods: true
 
-  # Lambda Permission for API Gateway
+  # OPTIONS method for CORS - Monitoring Alert
+  MonitoringAlertOptionsMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ContactFormApi
+      ResourceId: !Ref MonitoringAlertResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
+            ResponseTemplates:
+              application/json: ''
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+
+  # Lambda Permission for API Gateway - Contact Form
   ContactFormLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref ContactFormFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ContactFormApi}/*/*'
+
+  # Lambda Permission for API Gateway - Monitoring Alert
+  MonitoringAlertLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref MonitoringAlertFunction
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ContactFormApi}/*/*'
@@ -143,19 +228,33 @@ Resources:
     DependsOn:
       - ContactFormMethod
       - ContactFormOptionsMethod
+      - MonitoringAlertMethod
+      - MonitoringAlertOptionsMethod
     Properties:
       RestApiId: !Ref ContactFormApi
       StageName: prod
 
 Outputs:
-  ApiEndpoint:
-    Description: API Gateway endpoint URL
+  ContactApiEndpoint:
+    Description: Contact form API Gateway endpoint URL
     Value: !Sub 'https://${ContactFormApi}.execute-api.${AWS::Region}.amazonaws.com/prod/submit'
     Export:
       Name: VerkflodeContactApiEndpoint
+
+  MonitoringAlertApiEndpoint:
+    Description: Monitoring alert API Gateway endpoint URL
+    Value: !Sub 'https://${ContactFormApi}.execute-api.${AWS::Region}.amazonaws.com/prod/monitoring-alert'
+    Export:
+      Name: VerkflodeMonitoringAlertApiEndpoint
   
-  LambdaFunctionArn:
-    Description: Lambda function ARN
+  ContactLambdaFunctionArn:
+    Description: Contact form Lambda function ARN
     Value: !GetAtt ContactFormFunction.Arn
     Export:
       Name: VerkflodeContactLambdaArn
+
+  MonitoringAlertLambdaFunctionArn:
+    Description: Monitoring alert Lambda function ARN
+    Value: !GetAtt MonitoringAlertFunction.Arn
+    Export:
+      Name: VerkflodeMonitoringAlertLambdaArn

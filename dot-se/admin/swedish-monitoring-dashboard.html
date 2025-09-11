@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swedish Market Technical Monitoring Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-healthy { background: #48bb78; }
+        .status-warning { background: #ed8936; }
+        .status-critical { background: #f56565; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .metric-good { color: #48bb78; }
+        .metric-warning { color: #ed8936; }
+        .metric-critical { color: #f56565; }
+
+        .chart-container {
+            height: 200px;
+            margin: 15px 0;
+            background: #f7fafc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #718096;
+        }
+
+        .alert {
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+
+        .alert-warning {
+            background: #fefcbf;
+            border-color: #f6e05e;
+        }
+
+        .alert-info {
+            background: #bee3f8;
+            border-color: #90cdf4;
+        }
+
+        .alert-time {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .controls {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #3182ce;
+        }
+
+        .btn-danger {
+            background: #f56565;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #48bb78;
+            transition: width 0.3s ease;
+        }
+
+        .progress-warning { background: #ed8936; }
+        .progress-critical { background: #f56565; }
+
+        .log-entry {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .timestamp {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .flag {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1><span class="flag">🇸🇪</span>Swedish Market Technical Monitoring Dashboard</h1>
+            <p>Real-time monitoring for verkflode.se - <span id="last-update" class="timestamp"></span></p>
+            <div id="overall-status">
+                <span class="status-indicator status-healthy"></span>
+                <span>System Status: <strong>Initializing...</strong></span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="refreshAllMonitoring()">🔄 Refresh All</button>
+            <button class="btn" onclick="startMonitoring()">▶️ Start Monitoring</button>
+            <button class="btn btn-danger" onclick="stopMonitoring()">⏹️ Stop Monitoring</button>
+            <button class="btn" onclick="exportData()">📊 Export Data</button>
+            <button class="btn" onclick="clearAlerts()">🗑️ Clear Alerts</button>
+            <button class="btn" onclick="testEmailAlert()">📧 Test Email Alert</button>
+            <button class="btn" onclick="toggleEmailAlerts()" id="emailToggleBtn">📧 Email: Loading...</button>
+        </div>
+
+        <div class="grid">
+            <!-- Uptime Monitoring -->
+            <div class="card">
+                <h3><span class="status-indicator" id="uptime-status"></span>Uptime Monitoring</h3>
+                <div class="metric">
+                    <span>Domain Status</span>
+                    <span class="metric-value" id="domain-status">Checking...</span>
+                </div>
+                <div class="metric">
+                    <span>Uptime Percentage</span>
+                    <span class="metric-value" id="uptime-percentage">--%</span>
+                </div>
+                <div class="metric">
+                    <span>Average Response Time</span>
+                    <span class="metric-value" id="avg-response-time">-- ms</span>
+                </div>
+                <div class="metric">
+                    <span>Last Check</span>
+                    <span class="metric-value timestamp" id="last-uptime-check">--</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="uptime-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Performance Monitoring -->
+            <div class="card">
+                <h3><span class="status-indicator" id="performance-status"></span>Performance Metrics</h3>
+                <div class="metric">
+                    <span>Core Web Vitals Score</span>
+                    <span class="metric-value" id="cwv-score">--</span>
+                </div>
+                <div class="metric">
+                    <span>LCP (Largest Contentful Paint)</span>
+                    <span class="metric-value" id="lcp-value">-- ms</span>
+                </div>
+                <div class="metric">
+                    <span>FID (First Input Delay)</span>
+                    <span class="metric-value" id="fid-value">-- ms</span>
+                </div>
+                <div class="metric">
+                    <span>CLS (Cumulative Layout Shift)</span>
+                    <span class="metric-value" id="cls-value">--</span>
+                </div>
+                <div class="chart-container" id="performance-chart">
+                    Performance trends will appear here
+                </div>
+            </div>
+
+            <!-- Error Tracking -->
+            <div class="card">
+                <h3><span class="status-indicator" id="error-status"></span>Error Tracking</h3>
+                <div class="metric">
+                    <span>Total Errors (Session)</span>
+                    <span class="metric-value" id="total-errors">0</span>
+                </div>
+                <div class="metric">
+                    <span>Critical Errors</span>
+                    <span class="metric-value" id="critical-errors">0</span>
+                </div>
+                <div class="metric">
+                    <span>Network Failures</span>
+                    <span class="metric-value" id="network-failures">0</span>
+                </div>
+                <div class="metric">
+                    <span>Error Rate</span>
+                    <span class="metric-value" id="error-rate">0%</span>
+                </div>
+                <div id="recent-errors"></div>
+            </div>
+
+            <!-- SEO Monitoring -->
+            <div class="card">
+                <h3><span class="status-indicator" id="seo-status"></span>SEO Performance</h3>
+                <div class="metric">
+                    <span>Overall SEO Score</span>
+                    <span class="metric-value" id="seo-score">--</span>
+                </div>
+                <div class="metric">
+                    <span>Technical SEO</span>
+                    <span class="metric-value" id="technical-seo">--</span>
+                </div>
+                <div class="metric">
+                    <span>Content Optimization</span>
+                    <span class="metric-value" id="content-seo">--</span>
+                </div>
+                <div class="metric">
+                    <span>Local SEO (Swedish)</span>
+                    <span class="metric-value" id="local-seo">--</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="seo-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- User Engagement -->
+            <div class="card">
+                <h3><span class="status-indicator" id="engagement-status"></span>User Engagement</h3>
+                <div class="metric">
+                    <span>Session Duration</span>
+                    <span class="metric-value" id="session-duration">-- min</span>
+                </div>
+                <div class="metric">
+                    <span>Bounce Rate</span>
+                    <span class="metric-value" id="bounce-rate">--%</span>
+                </div>
+                <div class="metric">
+                    <span>Conversion Events</span>
+                    <span class="metric-value" id="conversion-events">0</span>
+                </div>
+                <div class="metric">
+                    <span>Scroll Depth</span>
+                    <span class="metric-value" id="scroll-depth">--%</span>
+                </div>
+            </div>
+
+            <!-- System Resources -->
+            <div class="card">
+                <h3><span class="status-indicator" id="system-status"></span>System Resources</h3>
+                <div class="metric">
+                    <span>Memory Usage</span>
+                    <span class="metric-value" id="memory-usage">-- MB</span>
+                </div>
+                <div class="metric">
+                    <span>Connection Type</span>
+                    <span class="metric-value" id="connection-type">--</span>
+                </div>
+                <div class="metric">
+                    <span>Online Status</span>
+                    <span class="metric-value" id="online-status">--</span>
+                </div>
+                <div class="metric">
+                    <span>Browser</span>
+                    <span class="metric-value" id="browser-info">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts Section -->
+        <div class="card">
+            <h3>🚨 Recent Alerts</h3>
+            <div id="alerts-container">
+                <p class="timestamp">No alerts at this time</p>
+            </div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="card">
+            <h3>📋 Activity Log</h3>
+            <div id="activity-log" class="log-entry">
+                Dashboard initialized...<br>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include monitoring scripts -->
+    <script src="monitoring/swedish-uptime-monitor.js"></script>
+    <script src="monitoring/swedish-performance-monitor.js"></script>
+    <script src="monitoring/swedish-error-tracker.js"></script>
+    <script src="monitoring/swedish-seo-monitor.js"></script>
+
+    <script>
+        class SwedishMonitoringDashboard {
+            constructor() {
+                this.monitors = {};
+                this.updateInterval = null;
+                this.isMonitoring = false;
+                
+                this.initializeDashboard();
+            }
+
+            async initializeDashboard() {
+                this.log('Initializing Swedish monitoring dashboard...');
+                
+                // Initialize monitors
+                try {
+                    this.monitors.uptime = new SwedishUptimeMonitor();
+                    this.monitors.performance = window.swedishPerformanceMonitor || new SwedishPerformanceMonitor();
+                    this.monitors.errors = window.swedishErrorTracker || new SwedishErrorTracker();
+                    this.monitors.seo = window.swedishSEOMonitor || new SwedishSEOMonitor();
+                    
+                    this.log('All monitoring systems initialized successfully');
+                    this.updateOverallStatus('healthy', 'All Systems Operational');
+                } catch (error) {
+                    this.log(`Error initializing monitors: ${error.message}`);
+                    this.updateOverallStatus('critical', 'Initialization Failed');
+                }
+                
+                // Start periodic updates
+                this.startPeriodicUpdates();
+                
+                // Initial data load
+                await this.refreshAllData();
+            }
+
+            startPeriodicUpdates() {
+                if (this.updateInterval) {
+                    clearInterval(this.updateInterval);
+                }
+                
+                this.updateInterval = setInterval(() => {
+                    this.refreshAllData();
+                }, 30000); // Update every 30 seconds
+                
+                this.isMonitoring = true;
+                this.log('Periodic updates started (30s interval)');
+            }
+
+            stopPeriodicUpdates() {
+                if (this.updateInterval) {
+                    clearInterval(this.updateInterval);
+                    this.updateInterval = null;
+                }
+                
+                this.isMonitoring = false;
+                this.log('Periodic updates stopped');
+            }
+
+            async refreshAllData() {
+                this.updateTimestamp();
+                
+                try {
+                    await Promise.all([
+                        this.updateUptimeMetrics(),
+                        this.updatePerformanceMetrics(),
+                        this.updateErrorMetrics(),
+                        this.updateSEOMetrics(),
+                        this.updateEngagementMetrics(),
+                        this.updateSystemMetrics()
+                    ]);
+                    
+                    this.updateAlerts();
+                    this.evaluateOverallHealth();
+                } catch (error) {
+                    this.log(`Error refreshing data: ${error.message}`);
+                }
+            }
+
+            // ... (rest of the methods would continue here)
+            
+            log(message) {
+                const logElement = document.getElementById('activity-log');
+                const timestamp = new Date().toLocaleTimeString();
+                logElement.innerHTML += `[${timestamp}] ${message}<br>`;
+                logElement.scrollTop = logElement.scrollHeight;
+            }
+
+            updateTimestamp() {
+                document.getElementById('last-update').textContent = 
+                    new Date().toLocaleString('sv-SE');
+            }
+
+            updateOverallStatus(status, text) {
+                const statusElement = document.getElementById('overall-status');
+                const indicator = statusElement.querySelector('.status-indicator');
+                
+                indicator.className = `status-indicator status-${status}`;
+                statusElement.querySelector('strong').textContent = text;
+            }
+        }
+
+        // Global functions for dashboard controls
+        function refreshAllMonitoring() {
+            if (window.dashboard) {
+                window.dashboard.refreshAllData();
+            }
+        }
+
+        function startMonitoring() {
+            if (window.dashboard) {
+                window.dashboard.startPeriodicUpdates();
+            }
+        }
+
+        function stopMonitoring() {
+            if (window.dashboard) {
+                window.dashboard.stopPeriodicUpdates();
+            }
+        }
+
+        function exportData() {
+            // Export functionality
+            console.log('Export data functionality');
+        }
+
+        function clearAlerts() {
+            // Clear alerts functionality
+            console.log('Clear alerts functionality');
+        }
+
+        async function testEmailAlert() {
+            const emailSystem = window.SwedishMonitoring?.systems?.emailAlerts;
+            if (!emailSystem) {
+                alert('Email alert system not available');
+                return;
+            }
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '📧 Sending Test...';
+
+            try {
+                const success = await emailSystem.testEmail();
+                if (success) {
+                    alert('✅ Test email sent successfully! Check your inbox.');
+                } else {
+                    alert('❌ Failed to send test email. Check console for details.');
+                }
+            } catch (error) {
+                alert('❌ Error sending test email: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📧 Test Email Alert';
+            }
+        }
+
+        function toggleEmailAlerts() {
+            const emailSystem = window.SwedishMonitoring?.systems?.emailAlerts;
+            if (!emailSystem) {
+                alert('Email alert system not available');
+                return;
+            }
+
+            const currentStatus = emailSystem.config.enabled;
+            emailSystem.setEnabled(!currentStatus);
+            updateEmailToggleButton();
+            
+            const status = emailSystem.config.enabled ? 'enabled' : 'disabled';
+            alert(`Email alerts ${status}`);
+        }
+
+        function updateEmailToggleButton() {
+            const btn = document.getElementById('emailToggleBtn');
+            const emailSystem = window.SwedishMonitoring?.systems?.emailAlerts;
+            
+            if (!emailSystem) {
+                btn.textContent = '📧 Email: Unavailable';
+                btn.disabled = true;
+                return;
+            }
+
+            const enabled = emailSystem.config.enabled;
+            btn.textContent = `📧 Email: ${enabled ? 'ON' : 'OFF'}`;
+            btn.style.backgroundColor = enabled ? '#28a745' : '#6c757d';
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            window.dashboard = new SwedishMonitoringDashboard();
+            
+            // Update email toggle button when monitoring is ready
+            window.addEventListener('swedishMonitoringReady', function() {
+                setTimeout(updateEmailToggleButton, 1000);
+            });
+            
+            // Update email toggle button periodically
+            setInterval(updateEmailToggleButton, 30000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "market": "swedish",
+  "region": "SE",
+  "language": "sv-SE",
+  "analytics_config": {
+    "goal_tracking": {
+      "demo_requests": {
+        "enabled": true,
+        "goal_name": "Swedish Demo Request",
+        "conversion_value": 1,
+        "description": "Demo requests from Swedish crisis messaging site"
+      },
+      "contact_forms": {
+        "enabled": true,
+        "goal_name": "Swedish Contact Form",
+        "conversion_value": 1,
+        "description": "Contact form submissions from Swedish market"
+      }
+    },
+    "content_engagement": {
+      "crisis_messaging_sections": [
+        "hero-crisis-messaging",
+        "problem-missed-goals",
+        "solution-collective-intelligence",
+        "mission-three-goals",
+        "supply-chain-value",
+        "market-urgency"
+      ],
+      "key_conversion_points": [
+        "#contact",
+        ".cta-demo-button",
+        "button[type='submit']"
+      ]
+    },
+    "geotargeting": {
+      "primary_market": "Sweden",
+      "target_regions": ["Stockholm", "Göteborg", "Malmö"],
+      "search_console_property": "https://verkflode.se",
+      "hreflang": "sv"
+    }
+  },
+  "dashboard_config": {
+    "swedish_metrics": {
+      "conversion_rate_target": 3.5,
+      "demo_requests_monthly_target": 50,
+      "crisis_messaging_effectiveness": true
+    },
+    "comparison_markets": ["english_site"],
+    "reporting_frequency": "weekly"
+  }
+}

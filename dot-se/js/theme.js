@@ -72,18 +72,27 @@
     // Update theme toggle button
     function updateThemeToggle(theme) {
         const themeToggle = document.getElementById('themeToggle');
-        if (themeToggle) {
-            const isDark = theme === DARK_THEME;
-            themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
-            
-            // Update icon
-            themeToggle.innerHTML = isDark ? 
-                `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+        
+        const isDark = theme === DARK_THEME;
+        const ariaLabel = isDark ? 'Växla till ljust läge' : 'Växla till mörkt läge';
+        
+        const lightIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>` :
-                `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                </svg>`;
+        
+        const darkIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>`;
+        
+        if (themeToggle) {
+            themeToggle.setAttribute('aria-label', ariaLabel);
+            themeToggle.innerHTML = isDark ? lightIcon : darkIcon;
+        }
+        
+        if (mobileThemeToggle) {
+            mobileThemeToggle.setAttribute('aria-label', ariaLabel);
+            mobileThemeToggle.innerHTML = isDark ? lightIcon : darkIcon;
         }
     }
 
@@ -111,7 +120,7 @@
         announcement.setAttribute('role', 'status');
         announcement.setAttribute('aria-live', 'polite');
         announcement.className = 'sr-only';
-        announcement.textContent = `Theme changed to ${theme} mode`;
+        announcement.textContent = `Tema ändrat till ${theme === DARK_THEME ? 'mörkt' : 'ljust'} läge`;
         
         document.body.appendChild(announcement);
         setTimeout(() => {
@@ -141,10 +150,16 @@
     function initializeThemeSystem() {
         initTheme();
         
-        // Add click listener to theme toggle
+        // Add click listeners to theme toggles
         const themeToggle = document.getElementById('themeToggle');
+        const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+        
         if (themeToggle) {
             themeToggle.addEventListener('click', toggleTheme);
+        }
+        
+        if (mobileThemeToggle) {
+            mobileThemeToggle.addEventListener('click', toggleTheme);
         }
         
         // Keyboard shortcut for theme toggle (Alt + T)

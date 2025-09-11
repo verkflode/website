@@ -1,0 +1,13 @@
+# Protect admin directory
+# Deny access to all files in this directory from web requests
+
+<Files "*">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Alternative: Password protection (uncomment and configure if needed)
+# AuthType Basic
+# AuthName "Restricted Area"
+# AuthUserFile /path/to/.htpasswd
+# Require valid-user
